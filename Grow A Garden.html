@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Checklist - BizzyBear</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1e1e1e;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 700px;
+      flex: 1;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: #f5f5f5;
+    }
+
+    .progress {
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 15px;
+      color: #ccc;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #2a2a2a;
+      border-radius: 8px;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s ease;
+      gap: 10px;
+    }
+
+    .item.checked {
+      background: #2e5134;
+      color: #b7e8b7;
+      text-decoration: line-through;
+    }
+
+    .item.tenho {
+      border-left: 5px solid #3c9fff;
+      background-color: #293649;
+    }
+
+    .item span {
+      font-size: 15px;
+      flex: 1;
+    }
+
+    .check-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .check-group label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: #bbb;
+      cursor: pointer;
+    }
+
+    .check-group input[type="checkbox"] {
+      transform: scale(1.2);
+      cursor: pointer;
+    }
+
+    footer {
+      width: 100%;
+      text-align: center;
+      padding: 15px;
+      font-size: 13px;
+      color: #888;
+      border-top: 1px solid #333;
+      background-color: #121212;
+      margin-top: auto;
+    }
+
+    footer strong {
+      color: #ffb84d;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>📋 Checklist - BizzyBear</h1>
+    <div class="progress" id="progress">Progresso: 0/0 completos</div>
+    <div id="checklist"></div>
+  </div>
+
+  <footer>
+    Feito por <strong>marlon978978</strong>. Todos os direitos reservados à Quest-Studio.
+  </footer>
+
+  <script>
+    const dados = [
+      "3 Honey & [Pollinated] 0.24kg Blueberry",
+      "3 Honey & [Pollinated] 0.06kg Orange Tulip",
+      "3 Honey & [Honey Glazed] 1.4kg Rose",
+      "5 Honey & [Pollinated] 0.33kg Carrot",
+      "5 Honey & [Pollinated] 0.36kg Strawberry",
+      "5 Honey & [Pollinated] 0.9kg Tomato",
+      "7 Honey & [Pollinated] 2.8kg Corn",
+      "7 Honey & [Honey Glazed] 3.6kg Apple",
+      "7 Honey & [Pollinated] 4.8kg Bamboo",
+      "10 Honey & [Pollinated] 2.5kg Foxglove",
+      "10 Honey & [Pollinated] 8.4kg Watermelon",
+      "10 Honey & [Pollinated] 9.6kg Cacao",
+      "13 Honey & [Pollinated] 3.6kg Nectarine",
+      "13 Honey & [Pollinated] 15.4kg Dragonfruit",
+      "13 Honey & [Honey Glazed] 17.8kg Coconut",
+      "18 Honey & [Pollinated] 20kg Mango",
+      "18 Honey & [Pollinated] 9.5kg Pumpkin",
+      "18 Honey & [Pollinated] 4.6kg Grape",
+      "23 Honey & [Pollinated] 30kg Mushroom",
+      "23 Honey & [Pollinated] 4kg Lilac",
+      "23 Honey & [Pollinated] 10.08kg Cactus",
+      "28 Honey & [Honey Glazed] 1.65kg Rose",
+      "28 Honey & [Pollinated] 11kg Hive Fruit",
+      "28 Honey & [Pollinated] 7.8kg Pepper",
+      "33 Honey & [Pollinated] 6kg Bamboo",
+      "33 Honey & [Pollinated] 7.2kg Pink Lily",
+      "35 Honey & [Pollinated] 24.6kg Mango",
+      "35 Honey & [Honey Glazed] 5.6kg Grape",
+      "37 Honey & [Honey Glazed] 15.6kg Beanstalk",
+      "40 Honey & [Pollinated] 24.5kg Purple Dahlia"
+    ];
+
+    const checklist = document.getElementById("checklist");
+    const progresso = document.getElementById("progress");
+
+    function atualizarProgresso() {
+      const total = dados.length;
+      let completos = 0;
+      dados.forEach(texto => {
+        if (localStorage.getItem("check_" + texto) === "true") completos++;
+      });
+      progresso.textContent = `Progresso: ${completos}/${total} completos`;
+    }
+
+    dados.forEach(texto => {
+      const div = document.createElement("div");
+      div.className = "item";
+
+      const labelSpan = document.createElement("span");
+      labelSpan.textContent = texto;
+
+      const checkGroup = document.createElement("div");
+      checkGroup.className = "check-group";
+
+      const checkFeito = document.createElement("input");
+      checkFeito.type = "checkbox";
+      checkFeito.checked = localStorage.getItem("check_" + texto) === "true";
+      if (checkFeito.checked) div.classList.add("checked");
+
+      const checkTenho = document.createElement("input");
+      checkTenho.type = "checkbox";
+      checkTenho.checked = localStorage.getItem("tenho_" + texto) === "true";
+      if (checkTenho.checked) div.classList.add("tenho");
+
+      checkFeito.addEventListener("change", () => {
+        if (checkFeito.checked) {
+          // Desmarca tenho se estiver marcado
+          if (checkTenho.checked) {
+            checkTenho.checked = false;
+            localStorage.setItem("tenho_" + texto, "false");
+            div.classList.remove("tenho");
+          }
+        }
+        localStorage.setItem("check_" + texto, checkFeito.checked ? "true" : "false");
+        div.classList.toggle("checked", checkFeito.checked);
+        atualizarProgresso();
+      });
+
+      checkTenho.addEventListener("change", () => {
+        if (checkTenho.checked) {
+          // Desmarca feito se estiver marcado
+          if (checkFeito.checked) {
+            checkFeito.checked = false;
+            localStorage.setItem("check_" + texto, "false");
+            div.classList.remove("checked");
+            atualizarProgresso();
+          }
+        }
+        localStorage.setItem("tenho_" + texto, checkTenho.checked ? "true" : "false");
+        div.classList.toggle("tenho", checkTenho.checked);
+      });
+
+      const labelFeito = document.createElement("label");
+      labelFeito.appendChild(checkFeito);
+      labelFeito.append("feito");
+
+      const labelTenho = document.createElement("label");
+      labelTenho.appendChild(checkTenho);
+      labelTenho.append("Tenho");
+
+      checkGroup.appendChild(labelFeito);
+      checkGroup.appendChild(labelTenho);
+
+      div.appendChild(labelSpan);
+      div.appendChild(checkGroup);
+      checklist.appendChild(div);
+    });
+
+    atualizarProgresso();
+  </script>
+</body>
+</html>
